@@ -405,3 +405,154 @@ def bubbleSort(arr):
     return arr
 
 ```
+
+##### 12、字符编码
+```
+字符串编码为字节串：str.encode('utf8')
+字节串解码成字符串：str.decode('utf8')
+
+```
+
+##### 13、文本文件读写
+```
+在python语言中，我们要读写文本文件， 首先通过内置函数open 打开一个文件。
+open函数会返回一个对象，我们可以称之为文件对象。
+这个返回的文件对象就包含读取文本内容和写入文本内容的方法。
+要写入字符串到文件中，需要先将字符串编码为字节串。
+而从文本文件中读取的文本信息都是字节串，要进行处理之前，必须先将字节串解码为字符串。
+文件的打开，分为 文本模式 和 二进制模式。
+1、文本模式：
+open(
+    file, 
+    mode='r', 
+    buffering=-1, 
+    encoding=None, 
+    errors=None, 
+    newline=None, 
+    closefd=True, 
+    opener=None
+    ) 
+以下三个参数最常用:
+参数 file：指定了要打开的文件的路径，可以是相对路径也可以是绝对路径
+参数 mode:指定文件打开的模式。（r：只读文本模式打开，最常用的模式且默认 w：只写文本模式打开，表示覆盖写文件 a：追加文本模式打开 
+如果我们要 读取文本文件内容到字符串对象中 ， 就应该使用 r 模式。
+如果我们要 创建一个新文件写入内容，或者清空某个文本文件重新写入内容， 就应该使用 ‘w’ 模式。
+如果我们要 从某个文件末尾添加内容， 就应该使用 ‘a’ 模式。）
+参数 encoding:指定读写文本文件时使用的字符编解码方式,默认gbk编码
+
+写文件示例：
+# 指定编码方式为 utf8
+f = open('tmp.txt','w',encoding='utf8')
+# write方法会将字符串编码为utf8字节串写入文件
+f.write('白月黑羽：祝大家好运气')
+# 文件操作完毕后， 使用close 方法关闭该文件对象
+f.close()
+
+读文件示例:
+# 指定编码方式为 gbk，gbk编码兼容gb2312
+f = open('tmp.txt','r',encoding='gbk')
+# read 方法会在读取文件中的原始字节串后， 根据上面指定的gbk解码为字符串对象返回
+content = f.read()
+# 文件操作完毕后， 使用close 方法关闭该文件对象
+f.close()
+# 通过字符串的split方法获取其中用户名部分
+name = content.split('：')[0]
+print(name)
+
+注意read函数有参数size，读取文本文件的时候，用来指定这次读取多少个字符。 如果不传入该参数，就是读取文件中所有的内容。
+tmp.txt文件内容为：
+hello
+cHl0aG9uMy52aXAgYWxsIHJpZ2h0cyByZXNlcnZlZA==
+
+# 因为是读取文本文件的模式， 可以无须指定 mode参数
+# 因为都是 英文字符，基本上所以的编码方式都兼容ASCII，可以无须指定encoding参数
+f = open('tmp.txt')
+tmp = f.read(3)  # read 方法读取3个字符
+print(tmp)       # 返回3个字符的字符串 'hel' 
+tmp = f.read(3)  # 继续使用 read 方法读取3个字符
+print(tmp)       # 返回3个字符的字符串 'lo\n'  换行符也是一个字符
+tmp = f.read()  # 不加参数，读取剩余的所有字符
+print(tmp)       # 返回剩余字符的字符串 'cHl0aG9uMy52aXAgYWxsIHJpZ2h0cyByZXNlcnZlZA==' 
+# 文件操作完毕后， 使用close 方法关闭该文件对象
+f.close()  
+
+读取文本文件内容的时候，通常还会使用readlines方法，该方法会返回一个列表。 列表中的每个元素依次对应文本文件中每行内容。但此方法每个元素最后都有一个换行符，若不想有换行符可以用字符串函数splitlines()
+f = open('tmp.txt')
+linelist = f.readlines() 
+f.close()  
+for line in linelist:
+    print(line)
+
+splitlines()方式:
+f = open('tmp.txt')
+content = f.read()   # 读取全部文件内容
+f.close()  
+# 将文件内容字符串 按换行符 切割 到列表中，每个元素依次对应一行
+linelist = content.splitlines()
+for line in linelist:
+    print(line)
+
+2、二进制（字节）模式
+读示例:
+# mode参数指定为rb 就是用二进制读的方式打开文件
+f = open('tmp.txt','rb')
+content = f.read()   
+f.close()  
+# 由于是 二进制方式打开，所以得到的content是 字节串对象 bytes
+# 内容为 b'\xe7\x99\xbd\xe6\x9c\x88\xe9\xbb\x91\xe7\xbe\xbd'
+print(content) 
+# 该对象的长度是字节串里面的字节个数，就是12，每3个字节对应一个汉字的utf8编码
+print(len(content))
+
+写示例(以二进制方式写数据到文件中，传给write方法的参数不能是字符串，只能是bytes对象):
+# mode参数指定为 wb 就是用二进制写的方式打开文件
+f = open('tmp.txt','wb')
+content = '白月黑羽祝大家好运连连'
+# 二进制打开的文件， 写入的参数必须是bytes类型，
+# 字符串对象需要调用encode进行相应的编码为bytes类型
+f.write(content.encode('utf8'))
+
+二进制方式拷贝一个文件内容：
+def fileCopy(srcPath,destPath):
+    srcF = open(srcPath,'rb')
+    content = srcF.read()
+    srcF.close()
+
+    destF = open(destPath,'wb')
+    destF.write(content)
+    destF.close()
+
+fileCopy('1.png','1copy.png')
+
+with语句(防止程序员忘记调用文件的close方法，python解释器自动调用):
+# open返回的对象 赋值为 变量 f
+with open('tmp.txt') as f:
+    linelist = f.readlines() 
+    for line in linelist:
+        print(line)
+
+写入缓冲:
+f = open('tmp.txt','w',encoding='utf8')
+f.write('白月黑羽：祝大家好运气')
+# 等待 30秒，再close文件
+import time
+time.sleep(30)
+f.close()
+延迟30秒再关闭文件，在30秒之前打开文件会发现没内容，这是因为提交的内容给的是操作系统，操作系统为提高效率将内容写入缓冲，只能等缓冲堆满或者用户调用close操作才能在文件中看到内容。
+
+若想立即看到内容写到文件中，可调用flush方法：
+f = open('tmp.txt','w',encoding='utf8')
+f.write('白月黑羽：祝大家好运气')
+# 立即把内容写到文件里面
+f.flush()
+# 等待 30秒，再close文件
+import time
+time.sleep(30)
+f.close()
+
+
+
+
+
+
+```

@@ -323,3 +323,85 @@ path = 'c:\windows\temp'
 path = 'c:\\windows\\temp'
 
 ```
+
+##### 11、循环
+```
+while循环和for循环
+
+while:
+i = 1
+while i <= 100:
+    print(i)
+    i += 1
+
+for:
+studentAges = ['小王:17', '小赵:16', '小李:17', '小孙:16', '小徐:18']
+
+for student in studentAges:
+    print(student)
+
+注意：如果循环一个空列表不会报错，只是不执行
+for one in []:
+    print(one)
+
+指定循环次数:
+# range里面的参数100 指定循环100次
+# 其中 n 依次为 0,1,2,3,4... 直到 99
+for n in range(100):  
+    print(n)
+注意：和Python 2 不同， Python 3 中的range 并不是一个函数，不会返回一个数字列表。 Python 3 中的range 是一个类
+如果你想返回一个 从 0到99的数字列表， 可以这样写 : list(range(100))
+
+打印出从50 到 100 所有的数字（两个参数指定范围）：
+for n in range(50,101):  
+    print(n) 
+range(50,101) 表示从 50 开始， 到 100 结束
+
+打印50到100，每次递增5（三个参数，前两个指定范围，第三个表示递增数）:
+for n in range(50,101,5):  
+    print(n) 
+
+enumerate 函数(返回列表元素的同时还返回下标索引，索引与元素本身组成元组返回):
+studentAges = ['小王:17', '小赵:16', '小李:17', '小孙:16', '小徐:18']
+# enumerate (studentAges) 每次迭代返回 一个元组
+# 里面有两个元素，依次是 元素的索引和元素本身 
+for idx, student in enumerate(studentAges):
+    if int(student.split(':')[-1]) > 17:     # 列表索引-1表示最后一个元素
+        print(idx)
+
+continue:结束单次循环，会继续后面的循环
+break:终止整个循环
+return：只用于函数，若用于循环会报错
+【函数】中的循环体内的代码， 使用 return 和 break 都可以从循环中跳出。
+但是，break 只是 跳出循环， 如果循环后面还有代码， 会进行执行;return 则会从函数里面立即返回。
+
+列表推导式:
+for循环方式：
+list1 = [1,2,3,4,5,6]
+list2 = []
+for num in list1:
+    list2.append(num*num)
+列表推导式方式（对列表a的所有元素做相同操作得到列表b）：
+list1 = [1,2,3,4,5,6]
+list2 = [num**2 for num in list1]
+
+循环嵌套:
+list1 = ['关羽','张飞','赵云','马超','黄忠']
+list2 = ['典韦','许褚','张辽','夏侯惇','夏侯渊']
+
+for member1 in list1:
+    for member2 in list2:
+        print(f'{member1} 大战 {member2}')
+
+冒泡排序：
+def bubbleSort(arr):
+    length = len(arr)
+
+    for j in range(length-1,0,-1):
+        for i in range(0,length-1):
+            if arr[i] > arr[i+1]:
+                arr[i], arr[i+1]= arr[i+1],arr[i]
+
+    return arr
+
+```

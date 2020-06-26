@@ -550,9 +550,112 @@ import time
 time.sleep(30)
 f.close()
 
+```
 
+##### 14、模块和库
+```
+一个py文件即为一个模块
+模块之间的调用:
+1、直接通过关键词import导入模块对象
+import aa  
+aa.param1  # 调用模块aa的属性
+aa.func()  # 调用模块aa的函数
+
+2、通过from import导入模块对象的标识符（属性，函数等）
+from aa import func 
+func()  # 直接引用模块aa的方法
+
+多模块导入：
+import aa,bb,cc
+一个模块导入多个标识符:
+from aa import func1,var1,func2,var2
+导入一个模块中所有标识符:
+from aa import *
+同名则指定别名：
+from aa import func
+from bb import func as func2
+func() # 调用模块aa的函数
+func2() # 调用模块bb的函数
+
+注意bb模块导入aa模块的一个变量后，模块aa和bb分别有一个同名的变量，若改变模块aa的该变量值后，模块bb中的该变量是不变的，他们是分别拥有一个同类型的变量，不是共享一个变量
+
+包：存放py模块文件的目录称为包，且包中需要有一个名为_init_.py的初始化文件，该文件一般为空，也可有代码。当包中模块被导入的时候会执行初始文件的代码。
+example:
+stock/                        ---   顶层包
+        __init__.py           ---   stock包的初始化文件
+        food/                 ---   food子包
+                __init__.py
+                pork.py
+                beef.py
+                lobster.py
+                ...
+        furniture/            ---   furniture子包
+                __init__.py
+                bed.py
+                desk.py
+                chair.py
+                ...
+        kitchen/              ---   kitchen子包
+                __init__.py
+                knife.py
+                pot.py
+                bowl.py
+                ...
+
+import stock.food.beef
+# 注意导入的是 stock.food.beef，调用的时候一定要加上所有的包路径前缀
+stock.food.beef.stockleft()
+或
+from stock.food.beef import stockleft
+stockleft()
+
+python标准库
+1、内置库(函数或类型不需要使用import即可使用)
+如内置类型：int、float、str、list、tuple等
+内置函数: int，str，print，type，len 等等
+
+其他库需要使用import引入才能使用库里面的函数:
+如:sys, os, time, datetime, json，random 等
+example:
+import sys
+sys.exit(0) # 结束python程序
+
+时间：
+import datetime
+
+# 返回这样的格式 '20160423'
+datetime.date.today().strftime("%Y%m%d") 
+
+# 返回这样的格式 '20160423 19:37:36'
+datetime.datetime.now().strftime("%Y%m%d %H:%M:%S")
+
+随机整数:
+from random import randint
+
+# 在 数字 1 到 8 之间(包括1和8本身)，随机取出一个数字
+num = randint(1,8)
+print(num)
+
+安装其他库:
+在Python中，安装第三方库，通常是使用pip命令。
+那些优秀的第三方库，基本都是放在一个叫 PYPI 的网站上
+
+我们在国内，使用pip 安装的时候，可能由于网络原因，到国外访问 PYPI 会比较慢。
+而国内有网站（比如豆瓣）对PYPI 做了镜像备份。
+我们可以通过在命令中加上参数 -i https://pypi.douban.com/simple/ ，这样就指定使用豆瓣作为安装包的下载网站。
+example:
+安装 requests库:
+pip install requests -i https://pypi.douban.com/simple/
+如果pip安装库的时候，出现SSL错误，可能是网络对https证书校验的问题，可以改用http协议下载:
+pip install requests -i http://pypi.douban.com/simple/  --trusted-host pypi.douban.com
+
+注意：安装命令在cmd中运行，不是在python交互式命令行执行。
+安装后导入库:
+import requests
+requests.get('http://www.baidu.com')
 
 
 
 
 ```
+

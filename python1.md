@@ -1,4 +1,4 @@
-#### note_python 3.7
+#### note_python 3.7 基础
 ##### 1、python3.7安装与运行
 ```
 python安装实际是安装python解析器，

@@ -659,3 +659,55 @@ requests.get('http://www.baidu.com')
 
 ```
 
+##### 15、字典
+```
+存储键值对的数据类型为字典,字典的元素为一个键值对
+member={key1:value1,key2:value2,key3:value3}
+赋值:
+member['key1'] = 1 #member中没有key1则新增，有则重新赋值
+
+//删除字典中某个元素
+var value = member.pop('key1')  #删除字典member中的key1元素，pop方法会返回要删除的元素key对应的值
+或
+del member['key1'] #关键词del删除该元素
+
+判断字典中是否存在某个key:
+key in member  # 判断键key是否存在于字典member中
+key not in member 是否不存在
+
+遍历字典:items()
+example:
+members = {
+    'account1'  : 13 ,
+    'account2'  : 12 ,
+    'account3'  : 15 ,
+}
+
+for account,level in members.items():
+    print (f'account:{account}, level:{level}')
+注意：items方法是将字典的元素存入一个类似列表的对象
+
+获取字典所有的键:members.keys()  # 列表对象
+获取字典所有的值:members.values() # 列表对象
+清空字典：members.clear()或重新赋空值members={} # 区别在于clear指向原字典，而后者是指向新的空字典，原字典没有使用被python解释器销毁
+
+字典的合并(update):
+members = {
+    'account1'  : 13 ,
+    'account2'  : 12 ,
+    'account3'  : 15 ,
+}
+
+another =  {
+    'account4'  : 13 ,
+    'account5'  : 12 ,
+}
+
+members.update(another)
+print(members)
+
+获得字典元素个数:
+len(members)
+
+```
+

@@ -711,3 +711,222 @@ len(members)
 
 ```
 
+##### 16、自定义类
+```
+class BenzCar:     
+    brand   = '奔驰'   # 类属性，类实例的共有属性
+    country = '德国'   # 类属性，类实例的共有属性
+
+    @staticmethod      # 类的静态方法 ，调用使用BenzCar.pressHorn(),静态方法不能访问实例属性
+    def pressHorn(): 
+        print('嘟嘟~~~~~~')
+
+    def __init__(self,color,engineSN):     # 类的初始化方法，属于类的实例方法，调用时不需要传递self，python解释器会自动传入类的实例对象
+        self.color  =  color     # 颜色
+        self.engineSN = engineSN # 发动机编号
+    
+    def changeColor(self,newColor):      # 类的实例方法中，定义的是类的实例属性，属于实例的特有属性
+        self.color = newColor
+
+car1 = BenzCar('白色','24503425527866')       
+car1.changeColor('黑色')
+print (car1.color)
+
+若类的实例属性与类属性重名了，那么类实例访问该属性就是访问的实例属性，类名访问该属性就是访问的类属性
+
+类的继承：
+class Benz2016(BenzCar):   # 子类继承父类，在定义子类时加一个括号，带入父类即可,子类实例拥有父类所有属性和方法
+    price   = 580000
+    model   = 'Benz2016'   
+
+
+class Benz2018(BenzCar):
+    price   = 880000
+    model   = 'Benz2018' 
+
+子类除了拥有父类一切属性和方法，也可定义自己的方法：
+class Benz2018(BenzCar):
+    price   = 880000
+    model   = 'Benz2018'     
+
+    def __init__(self,color,engineSN,weight):
+        # 先调用父类的初始化方法,也可用super()替代BenzCar来调用父类的初始化方法，注意使用super()调用时，需要省略self形参,如：super().__init__(color, engineSN)，建议使用super，方便拓展修改
+        BenzCar.__init__(self,color,engineSN)
+        self.weight = weight # 车的重量
+        self.oilweight = 0  # 油的重量
+    
+    # 加油 新增的实例方法，涉及到新的实例属性oilweight，所以上面的初始化方法必须操作此实例属性
+    def fillOil(self, oilAdded):
+        self.oilweight +=  oilAdded 
+        self.weight    +=  oilAdded
+
+类的组合关系（即类实例是另一个类的实例属性）:
+# 轮胎
+class Tire:    
+    def __init__(self,size,createDate):
+        self.size  =  size  # 尺寸
+        self.createDate = createDate # 出厂日期
+
+class BenzCar:    
+    brand   = '奔驰'  
+    country = '德国'  
+
+  
+    def __init__(self,color,engineSN,tires):
+        self.color  =  color  # 颜色
+        self.engineSN = engineSN # 发动机编号
+        self.tires   =  tires
+
+# 创建4个轮胎实例对象
+tires = [Tire(20,'20160808')  for i in range(4)]
+car = BenzCar('red','234342342342566',tires)
+
+
+打印实例对象：
+class BenzCar:
+    brand   = '奔驰'
+
+    def __init__(self,color='black'):
+        self.color = color
+
+    def __repr__(self):  # 此方法必须添加，因为 print 一个对象时，其本质就是打印 该对象的 __repr__ 方法的返回值
+        return f"BenzCar object: brand = 奔驰, color = {self.color}"
+
+# 打印实例对象
+print(BenzCar())
+
+```
+
+##### 17、异常
+```
+捕获异常（try...except）
+example:
+while True:
+    try:
+        miles = input('请输入英里数:')
+        km = int(miles) * 1.609344
+        print(f'等于{km}公里')
+    except ValueError:
+        print('你输入了非数字字符')
+
+example:
+try:
+    choice = input('输入你的选择:')
+    if choice == '1':
+        100/0
+    elif choice == '2':
+        [][2]
+except ZeroDivisionError:
+    print ('出现 ZeroDivisionError')
+except IndexError  :
+    print ('出现 IndexError')
+
+获取异常对象:
+try:
+    100/0
+except ZeroDivisionError as e:
+    print (f'异常对象信息:{e}')
+
+匹配所有异常:
+try:
+    100/0
+except Exception as e:
+    print('未知异常:', e)
+或
+try:
+    100/0
+except:
+    print('未知异常:')
+
+想知道异常的详细信息，可以使用traceback模块:
+import traceback   # 注意需要导入此模块
+try:
+    100/0
+except :
+    print(traceback.format_exc())
+
+自定义异常：
+# 异常对象，代表电话号码有非法字符
+class InvalidCharError(Exception):
+    pass
+
+# 异常对象，代表电话号码非中国号码
+class NotChinaTelError(Exception):
+    pass
+
+使用raise 关键字来抛出对应的自定义异常：
+def  register():
+    tel = input('请注册您的电话号码:')
+
+    # 如果有非数字字符
+    if not tel.isdigit(): 
+        raise InvalidCharError
+
+    # 如果不是以86开头，则不是中国号码
+    if not tel.startswith('86'): 
+        raise NotChinaTelError
+    
+    return tel
+
+try:
+    ret = register()
+except InvalidCharError:
+    print('电话号码中有错误的字符')
+except NotChinaTelError:
+    print('非中国手机号码')
+
+```
+
+##### 18、函数可变参数
+```
+常规做法：
+studentInfo = {
+    '张飞' :  18,
+    '赵云' :  17,
+    '许褚' :  16,
+    '典韦' :  18,
+    '关羽' :  19,
+}
+
+def  printAge(students) :
+    for  student in students:
+        print( f'学生：{student} , 年龄 {studentInfo[student]}')
+
+printAge(['张飞', '典韦', '关羽'])
+printAge(['赵云'])
+
+1、可变参数做法（在函数定义的形参前加*，表示参数数量不定）：
+def  printAge(*students) :
+    for  student in students:
+        print( f'学生：{student} , 年龄 {studentInfo[student]}')
+printAge('张飞', '典韦', '关羽')
+printAge('赵云')
+
+调用的时候也可以用*展开：
+onebatch = ['张飞', '典韦', '关羽']
+printAge(*onebatch)  # 调用函数的时候，参数前面加*，表示参数展开,等价于printAge (onebatch[0], onebatch[1], onebatch[2])
+
+2、关键字可变参数：
+def addStudents(table,**students):
+    print(type(students))
+    for name,age in students.items():
+        table[name] = age
+
+table1 = {}
+table2 = {}
+addStudents(table1, 李白=20, 杜甫=24)
+addStudents(table2, Jodan=45, James=32, onil=40)
+print(table1)
+print('----------------')
+print(table2)
+
+这种前面加2个星号的参数，称之为关键字可变参数，
+在调用该函数的时候，Python解释器会创建一个 dict （字典） 赋值给这个参数变量。
+并且会把 传入的数据对象 分别放到这个dict 对象里面。
+传入的参数对象，必须是像 name=value这种 带参数名和参数值的， 放到dict对象时，参数名是字典元素的key，参数值是字典元素的value。
+
+调用时参数展开：
+onebatch = {'李白': 20, '杜甫': 24}
+addStudents(table1, **onebatch)
+```
+
